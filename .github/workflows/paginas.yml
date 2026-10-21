@@ -1,0 +1,26 @@
+name: Vigilar páginas
+
+# Cada 10 minutos revisa cada página y avisa a su check de healthchecks.io.
+# Si esta tarea deja de correr, healthchecks también alerta porque dejan de llegar los avisos.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  vigilar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ranchenato Radio
+        run: bash revisar.sh https://www.ranchenatoradio.com "${{ secrets.HC_RANCHENATO }}"
+      - name: VIP Stereo
+        if: always()
+        run: bash revisar.sh https://www.vipstereo.com "${{ secrets.HC_VIPSTEREO }}"
+      - name: Publicidad Real
+        if: always()
+        run: bash revisar.sh https://www.publicidadreal.com "${{ secrets.HC_PUBLICIDADREAL }}"
